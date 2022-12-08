@@ -8,3 +8,4 @@ if input_type_checker.isdigit():
 else:
     length = len(input_type_checker)
     print(f"This is {length} lettеr word")
+
