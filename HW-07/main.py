@@ -99,11 +99,14 @@ while True:
         command = ''
 
 # ------------------------------------------------------------------------------------------
-    if command == 'list':
-        for key in phonebook:
-            print(key)
-            command = ''
-        continue
-    command = ''
 
+    if command == 'list':
+        if len(phonebook) == 0:
+            print('Phonebook is empty')
+        else:
+            for key in phonebook:
+                print(key)
+                command = ''
+            continue
+        command = ''
 
