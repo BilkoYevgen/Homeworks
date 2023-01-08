@@ -10,7 +10,7 @@ def fibonacci(n):
 
 ls = (list(fibonacci(number)))
 
-print (ls.pop())
+print(ls[-1])
 
 # 2. Створити програму, яка буде приймати число і друкувати відповідне число в послідовності Фібоначчі, використовуючи ітератори (необов'язкове виконання).
 
@@ -21,12 +21,10 @@ print("Attention! Function №2 is missing")
 n = int(input("Enter a number for function №3: "))
 
 def fibonacci(n):
-  if n == 0:
-    return 0
-  elif n == 1:
-    return 1
-  else:
-    return fibonacci(n-1) + fibonacci(n-2)
+    if n == 0 or n == 1:
+        return n
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
 
 print(fibonacci(n))
 
@@ -42,4 +40,3 @@ def factorial(n):
     return n * factorial(n - 1)
 
 print(factorial(n))
-
