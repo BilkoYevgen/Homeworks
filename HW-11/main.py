@@ -33,7 +33,7 @@ print("------------------------------TasK №2-----------------------------")
 class MyCustomException(Exception):
     pass
 
-def myFuncError():
+def my_func_error():
     if (1==1):
         raise MyCustomException("Custom exception is occured")
 
