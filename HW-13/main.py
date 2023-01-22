@@ -6,8 +6,13 @@ import re
 
 phonebook = {}
 
-with open('phonebook.json', 'r') as file:
-    phonebook = json.load(file)
+try:
+    with open('phonebook.json', 'r') as file:
+        phonebook = json.load(file)
+except FileNotFoundError:
+    print("Error: phonebook.json not found.")
+else:
+    print("Phonebook successfully loaded")
 
 print(f'Now in your contacts: {phonebook}')
 
@@ -40,7 +45,7 @@ while True:
         if name not in phonebook:
             if re.search(r'(\+38|38)?0\d{9}\b', number):      # REGEX IS HERE
                 phonebook[name] = number
-                with open('phonebook.json', 'w') as file:
+                with open('phonebook.json', 'w+') as file:
                     json.dump(phonebook, file)
                 print('Contact added successfully')
                 command = ''
@@ -58,7 +63,7 @@ while True:
         my_list = phonebook.keys()
         if splitted_value in my_list:
             del phonebook[splitted_value]
-            with open('phonebook.json', 'w') as file:
+            with open('phonebook.json', 'w+') as file:
                 json.dump(phonebook, file)
             print(f'{splitted_value} successfully deleted')
             print(f'Now you have {len(phonebook)} contacts')
