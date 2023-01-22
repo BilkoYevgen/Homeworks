@@ -25,8 +25,14 @@ def number_validation(number):
 
 phonebook = {}
 
-with open('phonebook.json', 'r') as file:
-    phonebook = json.load(file)
+try:
+    with open('phonebook.json', 'r') as file:
+        phonebook = json.load(file)
+except FileNotFoundError:
+    print("Error: phonebook.json not found.")
+else:
+    print("Phonebook successfully loaded")
+
 
 print(f'Now in your contacts: {phonebook}')
 
@@ -59,7 +65,7 @@ while True:
         if name not in phonebook:
             if number_validation(number):
                 phonebook[name] = number
-                with open('phonebook.json', 'w') as file:
+                with open('phonebook.json', 'w+') as file:
                     json.dump(phonebook, file)
                 print('Contact added successfully')
                 command = ''
@@ -138,7 +144,7 @@ def decorator(func):
     def wrapper(*args, **kwargs):
         print(f'Function name: {func.__name__}')
         print(f'Function was called at: {time.strftime("%d/%m/%Y, %H:%M:%S")}')
-        return func
+        return func(*args, **kwargs)
 
     return wrapper
 
@@ -156,7 +162,7 @@ calc()
 class MyException(Exception):
     def __init__(self, message):
         super().__init__(message)
-        with open('exception.txt', 'a') as file:
+        with open('exception.txt', 'a+') as file:
             file.write(message + " " + str(time.strftime("%d/%m/%Y, %H:%M:%S")) + '\n')
 
 
