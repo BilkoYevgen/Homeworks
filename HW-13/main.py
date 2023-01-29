@@ -43,7 +43,7 @@ while True:
         name = input('Type name: ')
         number = input('Type number: ')
         if name not in phonebook:
-            if re.search(r'(\+38|38)?0\d{9}\b', number):      # REGEX IS HERE
+            if re.search(r'^(\+380|380|0)\d{9}$', number):      # REGEX IS HERE
                 phonebook[name] = number
                 with open('phonebook.json', 'w+') as file:
                     json.dump(phonebook, file)
