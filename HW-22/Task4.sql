@@ -1,0 +1,1 @@
+SELECT purchases.user_id, COUNT(*) AS purchases_count FROM purchases GROUP BY purchases.user_id;
