@@ -1,0 +1,62 @@
+body {
+  font-family: 'Rocher', serif;
+  text-align: center;
+  font-size: 50px;
+  display: flex;
+  background: #4e54c8;
+  background: -webkit-linear-gradient(to right, #8f94fb, #4e54c8);
+  background: linear-gradient(to right, #8f94fb, #4e54c8);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+@font-palette-values Mint {
+  font-family: Rocher, serif;
+  base-palette: 7;
+}
+
+.mint {
+  font-family: var(--Mint);
+}
+
+.info {
+  margin: 10px;
+  text-align: center;
+  font-family: 'Shantell Sans', cursive;
+}
+
+img {
+  height: 500px;
+  margin: 0 auto;
+}
+
+
+.table {
+  font-weight: bold;
+  font-size: large;
+}
+
+@font-face {
+  font-family: 'Rocher';
+  src: url(https://assets.codepen.io/9632/RocherColorGX.woff2);
+}
+
+.hello, .about {
+  font-family: 'Rocher', serif;
+  text-align: center;
+  font-size: 30px;
+}
+
+.job {
+  margin-top: 80px;
+  font-weight: bold;
+  font-size: medium;
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  color: white;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+}
