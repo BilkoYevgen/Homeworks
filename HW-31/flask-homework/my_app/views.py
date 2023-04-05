@@ -8,6 +8,8 @@ app.secret_key = secrets.token_hex(16)
 @app.route('/')
 def index():
     name = session.get('name')
+    app.logger.info("This INFO request")
+    app.logger.error("This ERROR request")
     if name:
         return render_template('index.html', name=name)
     else:
@@ -30,10 +32,10 @@ def get_books():
         return render_template('books.html', name=session['name'], books=random_books)
     else:
         return redirect(url_for('login'))
-@app.route('/users/<int:id>', methods=['GET'])
-def get_user_by_id(id):
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
     if 'name' in session:
-        if id % 2 == 0:
+        if user_id % 2 == 0:
             name = session['name']
             return render_template('user.html', id=id, name=name)
         else:
@@ -41,7 +43,7 @@ def get_user_by_id(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/books/<title>', methods=['GET'])
+@app.route('/books/<string:title>', methods=['GET'])
 def get_book_by_title(title):
     if 'name' in session:
         name = session['name']
