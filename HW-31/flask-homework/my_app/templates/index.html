@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Flask App</title>
+  </head>
+  <body>
+    {% if 'name' in session %}
+    <p>Hello, {{ session['name'] }}</p>
+    {% else %}
+    <p>Login to continue</p>
+    {% endif %}
+        <p>Hello world!</p>
+  </body>
+</html>

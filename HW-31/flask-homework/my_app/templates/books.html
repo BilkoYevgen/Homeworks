@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Users</title>
+</head>
+<body>
+	{% if 'name' in session %}
+	<p>Hello, {{ session['name'] }}</p>
+	{% else %}
+	<p>Please login to continue</p>
+	{% endif %}
+	<h1>Book list</h1>
+	<ul>
+		{% for books in books %}
+		<li>{{ books }}</li>
+		{% endfor %}
+	</ul>
+</body>
+</html>
