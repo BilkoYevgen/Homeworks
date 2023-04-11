@@ -23,6 +23,7 @@ def get_users():
         return render_template('users.html', name=session['name'], names=random_names)
     else:
         return redirect(url_for('login'))
+
 @app.route('/books', methods=['GET'])
 def get_books():
     if 'name' in session:
@@ -32,12 +33,13 @@ def get_books():
         return render_template('books.html', name=session['name'], books=random_books)
     else:
         return redirect(url_for('login'))
+
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     if 'name' in session:
         if user_id % 2 == 0:
             name = session['name']
-            return render_template('user.html', id=id, name=name)
+            return render_template('user.html', id=user_id, name=name)
         else:
             return 'Not found', 404
     else:
@@ -51,7 +53,6 @@ def get_book_by_title(title):
         return render_template('book.html', transformed_title=transformed_title, name=name)
     else:
         return redirect(url_for('login'))
-
 
 @app.route('/params', methods=['GET'])
 def get_params():
