@@ -1,9 +1,8 @@
-from my_app import app
-import random
-import secrets
-from flask import request, redirect, session, render_template, url_for
+from flask import request, redirect, session, render_template, url_for, abort
+from . import app
+from .models import User, Book, Purchase
 
-app.secret_key = secrets.token_hex(16)
+app.secret_key = app.config.get('SECRET_KEY')
 
 @app.route('/')
 def index():
@@ -17,42 +16,103 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    if 'name' in session:
-        all_names = ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack', 'Karen', 'Luke', 'Megan', 'Nancy', 'Oliver', 'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina', 'Victor', 'Wendy', 'Xavier', 'Yolanda', 'Zack']
-        random_names = random.sample(all_names, 10)
-        return render_template('users.html', name=session['name'], names=random_names)
-    else:
-        return redirect(url_for('login'))
+    all_users = User.query.all()
+    dict_users = [{
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'age': user.age
+    } for user in all_users]
+    if 'size' in request.args:
+        return dict_users[:int(request.args.get('size'))]
+    return dict_users
 
 @app.route('/books', methods=['GET'])
 def get_books():
-    if 'name' in session:
-        # Generate a list of 10 random books
-        all_books = ['1984 by George Orwell', 'To Kill a Mockingbird by Harper Lee', 'Pride and Prejudice by Jane Austen', 'The Catcher in the Rye by J.D. Salinger', 'The Great Gatsby by F. Scott Fitzgerald', 'Brave New World by Aldous Huxley', 'One Hundred Years of Solitude by Gabriel Garcia Marquez', 'The Lord of the Rings by J.R.R. Tolkien', 'Animal Farm by George Orwell', 'The Diary of a Young Girl by Anne Frank', 'The Hitchhiker\'s Guide to the Galaxy by Douglas Adams', 'The Hunger Games by Suzanne Collins']
-        random_books = random.sample(all_books, 10)
-        return render_template('books.html', name=session['name'], books=random_books)
-    else:
-        return redirect(url_for('login'))
+    all_books = Book.query.all()
+    dict_books = [{
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'year': book.year,
+        'price': book.price
+    } for book in all_books]
+    if 'size' in request.args:
+        return dict_books[:int(request.args.get('size'))]
+    return dict_books
 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
-    if 'name' in session:
-        if user_id % 2 == 0:
-            name = session['name']
-            return render_template('user.html', id=user_id, name=name)
-        else:
-            return 'Not found', 404
-    else:
-        return redirect(url_for('login'))
+    all_users = User.query.all()
+    for user in all_users:
+        if user.id == user_id:
+            user1 = [{
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'age': user.age
+            }]
+            return user1
+    return abort(404)
 
-@app.route('/books/<string:title>', methods=['GET'])
-def get_book_by_title(title):
-    if 'name' in session:
-        name = session['name']
-        transformed_title = title.capitalize()
-        return render_template('book.html', transformed_title=transformed_title, name=name)
-    else:
-        return redirect(url_for('login'))
+@app.route('/books/<int:book_id>', methods=['GET'])
+def get_book_by_title(book_id):
+    all_books = Book.query.all()
+    for book in all_books:
+        if book.id == book_id:
+            book1 = [{
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'year': book.year,
+                'price': book.price
+            }]
+            return book1
+    return abort(404)
+
+@app.route('/purchase')
+def purchase():
+    all_purchase = Purchase.query.all()
+    dict_purchase = []
+    for purchase_1 in all_purchase:
+        all_books = Book.query.all()
+        book1 = [book for book in all_books if purchase_1.book_id == book.id]
+        all_users = User.query.all()
+        user1 = [user for user in all_users if purchase_1.user_id == user.id]
+        purchase_2 = {
+            'id': purchase_1.id,
+            'user_id': purchase_1.user_id,
+            'book_id': purchase_1.book_id,
+            'date': purchase_1.date,
+            'title': book1[0].title,
+            'first_name': user1[0].first_name,
+            'last_name': user1[0].last_name
+        }
+        dict_purchase.append(purchase_2)
+    if 'size' in request.args:
+        return dict_purchase[:int(request.args.get('size'))]
+    return dict_purchase
+
+@app.route('/purchase/<int:purchases_id>')
+def purchase_id(purchases_id):
+    all_purchase = Purchase.query.all()
+    for purchase1 in all_purchase:
+        if purchase1.id == purchases_id:
+            all_books = Book.query.all()
+            book1 = [book for book in all_books if purchase1.book_id == book.id]
+            all_users = User.query.all()
+            user1 = [user for user in all_users if purchase1.user_id == user.id]
+            purchase_1 = [{
+                'id': purchase1.id,
+                'user_id': purchase1.user_id,
+                'book_id': purchase1.book_id,
+                'date': purchase1.date,
+                'title': book1[0].title,
+                'first_name': user1[0].first_name,
+                'last_name': user1[0].last_name
+            }]
+            return purchase_1
+    return abort(404)
 
 @app.route('/params', methods=['GET'])
 def get_params():
