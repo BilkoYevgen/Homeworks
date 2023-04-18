@@ -16,13 +16,16 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    users = User.query.all()
+    if request.args.get('size'):
+        users = User.query.limit(int(request.args.get('size'))).all()
+    else:
+        users = User.query.all()
     return [{
         'id': user.id,
         'first_name': user.first_name,
         'last_name': user.last_name,
         'age': user.age
-    } for user in users][:int(request.args.get('size')) if 'size' in request.args else None]
+    } for user in users]
 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
@@ -40,21 +43,18 @@ def get_user_by_id(user_id):
 
 @app.route('/books', methods=['GET'])
 def get_books():
-    all_books = Book.query.all()
-    dict_books = []
-    for book in all_books:
-        dict_books.append({
-            'id': book.id,
-            'title': book.title,
-            'author': book.author,
-            'year': book.year,
-            'price': book.price,
-        })
-    if 'size' in request.args:
-        size = int(request.args.get('size'))
-        return dict_books[:size]
+    if request.args.get('size'):
+        books = Book.query.limit(int(request.args.get('size'))).all()
     else:
-        return dict_books
+        books = Book.query.all()
+    return [{
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'year': book.year,
+        'price': book.price,
+    } for book in books]
+
 
 @app.route('/books/<int:book_id>', methods=['GET'])
 def get_book_by_title(book_id):
@@ -70,55 +70,50 @@ def get_book_by_title(book_id):
     }
     return book_data
 
-@app.route('/purchases')
+@app.route('/purchases', methods=['GET'])
 def get_purchases():
-    purchases = Purchase.query.all()
-    result = []
-    for purchase in purchases:
-        book = Book.query.get(purchase.book_id)
-        user = User.query.get(purchase.user_id)
-        purchase_info = {
-            'id': purchase.id,
-            'user': {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'age': user.age,
-            },
-            'book': {
-                'id': book.id,
-                'title': book.title,
-                'author': book.author,
-                'year': book.year,
-                'price': book.price
-            },
-            'date': purchase.date
-        }
-        result.append(purchase_info)
-    if 'limit' in request.args:
-        limit = int(request.args['limit'])
-        return result[:limit]
-    return result
+    if request.args.get('size'):
+        purchases = Purchase.query.limit(int(request.args.get('size'))).all()
+    else:
+        purchases = Purchase.query.all()
+    return [{
+        'id': purchase.id,
+        'user': {
+            'id': purchase.user.id,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name,
+            'age': purchase.user.age,
+        },
+        'book': {
+            'id': purchase.book.id,
+            'title': purchase.book.title,
+            'author': purchase.book.author,
+            'year': purchase.book.year,
+            'price': purchase.book.price
+        },
+        'date': purchase.date
+    } for purchase in purchases]
+
+
 
 @app.route('/purchases/<int:purchases_id>')
 def purchase_id(purchases_id):
     purchase = Purchase.query.get(purchases_id)
     if purchase:
-        book = Book.query.get(purchase.book_id)
-        user = User.query.get(purchase.user_id)
         purchase_data = {
             'id': purchase.id,
             'user_id': purchase.user_id,
             'book_id': purchase.book_id,
             'date': purchase.date,
-            'title': book.title,
-            'author': book.author,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'age': user.age,
+            'title': purchase.book.title,
+            'author': purchase.book.author,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name,
+            'age': purchase.user.age,
         }
         return purchase_data
     return abort(404)
+
 
 @app.route('/params', methods=['GET'])
 def get_params():
