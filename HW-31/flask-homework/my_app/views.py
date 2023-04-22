@@ -1,9 +1,8 @@
-from my_app import app
-import random
-import secrets
-from flask import request, redirect, session, render_template, url_for
+from flask import request, redirect, session, render_template, url_for, abort
+from . import app
+from .models import User, Book, Purchase
 
-app.secret_key = secrets.token_hex(16)
+app.secret_key = app.config.get('SECRET_KEY')
 
 @app.route('/')
 def index():
@@ -17,42 +16,104 @@ def index():
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    if 'name' in session:
-        all_names = ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack', 'Karen', 'Luke', 'Megan', 'Nancy', 'Oliver', 'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina', 'Victor', 'Wendy', 'Xavier', 'Yolanda', 'Zack']
-        random_names = random.sample(all_names, 10)
-        return render_template('users.html', name=session['name'], names=random_names)
+    if request.args.get('size'):
+        users = User.query.limit(int(request.args.get('size'))).all()
     else:
-        return redirect(url_for('login'))
-
-@app.route('/books', methods=['GET'])
-def get_books():
-    if 'name' in session:
-        # Generate a list of 10 random books
-        all_books = ['1984 by George Orwell', 'To Kill a Mockingbird by Harper Lee', 'Pride and Prejudice by Jane Austen', 'The Catcher in the Rye by J.D. Salinger', 'The Great Gatsby by F. Scott Fitzgerald', 'Brave New World by Aldous Huxley', 'One Hundred Years of Solitude by Gabriel Garcia Marquez', 'The Lord of the Rings by J.R.R. Tolkien', 'Animal Farm by George Orwell', 'The Diary of a Young Girl by Anne Frank', 'The Hitchhiker\'s Guide to the Galaxy by Douglas Adams', 'The Hunger Games by Suzanne Collins']
-        random_books = random.sample(all_books, 10)
-        return render_template('books.html', name=session['name'], books=random_books)
-    else:
-        return redirect(url_for('login'))
+        users = User.query.all()
+    return [{
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'age': user.age
+    } for user in users]
 
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
-    if 'name' in session:
-        if user_id % 2 == 0:
-            name = session['name']
-            return render_template('user.html', id=user_id, name=name)
-        else:
-            return 'Not found', 404
+    user = User.query.get(user_id)
+    if user:
+        user_data = {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'age': user.age
+        }
+        return user_data
     else:
-        return redirect(url_for('login'))
+        abort(404)
 
-@app.route('/books/<string:title>', methods=['GET'])
-def get_book_by_title(title):
-    if 'name' in session:
-        name = session['name']
-        transformed_title = title.capitalize()
-        return render_template('book.html', transformed_title=transformed_title, name=name)
+@app.route('/books', methods=['GET'])
+def get_books():
+    if request.args.get('size'):
+        books = Book.query.limit(int(request.args.get('size'))).all()
     else:
-        return redirect(url_for('login'))
+        books = Book.query.all()
+    return [{
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'year': book.year,
+        'price': book.price,
+    } for book in books]
+
+
+@app.route('/books/<int:book_id>', methods=['GET'])
+def get_book_by_title(book_id):
+    book = Book.query.get(book_id)
+    if not book:
+        return abort(404)
+    book_data = {
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'year': book.year,
+        'price': book.price
+    }
+    return book_data
+
+@app.route('/purchases', methods=['GET'])
+def get_purchases():
+    if request.args.get('size'):
+        purchases = Purchase.query.limit(int(request.args.get('size'))).all()
+    else:
+        purchases = Purchase.query.all()
+    return [{
+        'id': purchase.id,
+        'user': {
+            'id': purchase.user.id,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name,
+            'age': purchase.user.age,
+        },
+        'book': {
+            'id': purchase.book.id,
+            'title': purchase.book.title,
+            'author': purchase.book.author,
+            'year': purchase.book.year,
+            'price': purchase.book.price
+        },
+        'date': purchase.date
+    } for purchase in purchases]
+
+
+
+@app.route('/purchases/<int:purchases_id>')
+def purchase_id(purchases_id):
+    purchase = Purchase.query.get(purchases_id)
+    if purchase:
+        purchase_data = {
+            'id': purchase.id,
+            'user_id': purchase.user_id,
+            'book_id': purchase.book_id,
+            'date': purchase.date,
+            'title': purchase.book.title,
+            'author': purchase.book.author,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name,
+            'age': purchase.user.age,
+        }
+        return purchase_data
+    return abort(404)
+
 
 @app.route('/params', methods=['GET'])
 def get_params():
