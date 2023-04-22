@@ -1,1 +1,1 @@
-This is my first GIT push practice
+This is repositiry made for homeworks in robot_dreams IT school
