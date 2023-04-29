@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Назва</title>
+</head>
+<body>
+{% block content %}
+    <h1>Список книг</h1>
+    <ul>
+    {% for book in books %}
+        <li>{{ book.title }} від {{ book.author }}</li>
+    {% empty %}
+        <li>Немає книг.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+</body>
+</html>
