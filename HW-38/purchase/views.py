@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.core import serializers
 from purchase.models import Purchase
 from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse_lazy
+from .forms import *
 
 
 class PurchaseListView(ListView):
@@ -16,3 +18,8 @@ class PurchaseDetailView(DetailView):
     context_object_name = 'purchase'
     pk_url_kwarg = 'id'
 
+class PurchaseCreateView(CreateView):
+    model = Purchase
+    template_name = 'purchase/add_purchase.html'
+    form_class = PurchaseForm
+    success_url = reverse_lazy('purchase_list')
