@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Заголовок</title>
+</head>
+<body>
+{% block content %}
+    <h1>Покупець: {{ purchase.user }}</h1>
+    <p>Книга: {{ purchase.book }}</p>
+    <p>Дата: {{ purchase.date }}</p>
+{% endblock %}
+</body>
+</html>

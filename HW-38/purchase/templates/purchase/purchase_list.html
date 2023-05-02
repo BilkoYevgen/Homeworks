@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Заголовок</title>
+</head>
+<body>
+{% block content %}
+    <h1>Список покупців</h1>
+    <ul>
+    {% for purchase in purchases %}
+        <li>{{ purchase.user }}</li>
+    {% empty %}
+        <li>Немає покупців.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+</body>
+</html>

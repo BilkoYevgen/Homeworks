@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Назва</title>
+</head>
+<body>
+{% block content %}
+    <h1>{{ book.title }}</h1>
+    <p>Автор: {{ book.author }}</p>
+    <p>Рік випуску: {{ book.year }}</p>
+    <p>Ціна: {{ book.price }}</p>
+{% endblock %}
+</body>
+</html>
