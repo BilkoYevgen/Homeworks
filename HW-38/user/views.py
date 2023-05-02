@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core import serializers
-from user.models import User
+from .models import User
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from .forms import *
+from rest_framework import generics
+from .serializers import UserSerializer
 
 
 class UserListView(ListView):
@@ -23,3 +25,7 @@ class UserCreateView(CreateView):
     template_name = 'user/add_user.html'
     form_class = UserForm
     success_url = reverse_lazy('user_list')
+
+class UserAPIView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
