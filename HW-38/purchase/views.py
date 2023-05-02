@@ -5,6 +5,8 @@ from purchase.models import Purchase
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from .forms import *
+from rest_framework import generics
+from .serializers import PurchaseSerializer
 
 
 class PurchaseListView(ListView):
@@ -23,3 +25,7 @@ class PurchaseCreateView(CreateView):
     template_name = 'purchase/add_purchase.html'
     form_class = PurchaseForm
     success_url = reverse_lazy('purchase_list')
+
+class PurchaseAPIView(generics.ListAPIView):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
