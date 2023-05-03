@@ -1,16 +1,10 @@
 from rest_framework import serializers
-from .models import Purchase
+from .models import Purchase, Book, User
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    book = serializers.SerializerMethodField()
-
-    def get_user(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
-
-    def get_book(self, obj):
-        return f"{obj.book.title} by {obj.book.author}"
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    book = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all())
 
     class Meta:
         model = Purchase
