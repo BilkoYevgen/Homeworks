@@ -10,30 +10,30 @@ from .serializers import BookSerializer
 import django_filters
 
 
-class BookListView(ListView):
-    model = Book
-    template_name = 'book/book_list.html'
-    context_object_name = 'books'
+# class BookListView(ListView):
+#     model = Book
+#     template_name = 'book/book_list.html'
+#     context_object_name = 'books'
+#
+# class BookDetailView(DetailView):
+#     model = Book
+#     template_name = 'book/book_detail.html'
+#     context_object_name = 'book'
+#     pk_url_kwarg = 'id'
+#
+# def create_book(request):
+#     if request.method == 'POST':
+#         form = BookForm(request.POST)
+#         if form.is_valid():
+#             book = form.save()
+#             return redirect('book_detail', id=book.id)
+#     else:
+#         form = BookForm()
+#     return render(request, 'book/add_book.html', {'form': form})
 
-class BookDetailView(DetailView):
-    model = Book
-    template_name = 'book/book_detail.html'
-    context_object_name = 'book'
-    pk_url_kwarg = 'id'
-
-def create_book(request):
-    if request.method == 'POST':
-        form = BookForm(request.POST)
-        if form.is_valid():
-            book = form.save()
-            return redirect('book_detail', id=book.id)
-    else:
-        form = BookForm()
-    return render(request, 'book/add_book.html', {'form': form})
-
-class BookAPIView(generics.ListAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+# class BookAPIView(generics.ListAPIView):
+#     queryset = Book.objects.all()
+#     serializer_class = BookSerializer
 
 class BookFilter(django_filters.FilterSet):
     class Meta:

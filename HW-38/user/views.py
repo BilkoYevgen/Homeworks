@@ -6,26 +6,26 @@ from .serializers import UserSerializer
 from rest_framework.pagination import PageNumberPagination
 import django_filters
 
-class UserListView(ListView):
-    model = User
-    template_name = 'user/user_list.html'
-    context_object_name = 'users'
+# class UserListView(ListView):
+#     model = User
+#     template_name = 'user/user_list.html'
+#     context_object_name = 'users'
+#
+# class UserDetailView(DetailView):
+#     model = User
+#     template_name = 'user/user_detail.html'
+#     context_object_name = 'user'
+#     pk_url_kwarg = 'id'
+#
+# class UserCreateView(CreateView):
+#     model = User
+#     template_name = 'user/add_user.html'
+#     form_class = UserForm
+#     success_url = reverse_lazy('user_list')
 
-class UserDetailView(DetailView):
-    model = User
-    template_name = 'user/user_detail.html'
-    context_object_name = 'user'
-    pk_url_kwarg = 'id'
-
-class UserCreateView(CreateView):
-    model = User
-    template_name = 'user/add_user.html'
-    form_class = UserForm
-    success_url = reverse_lazy('user_list')
-
-class UserAPIView(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserAPIView(generics.ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 class CustomPaginator(PageNumberPagination):
     page_size_query_param = 'page_size'
