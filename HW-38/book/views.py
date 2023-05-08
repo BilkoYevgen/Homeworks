@@ -5,7 +5,8 @@ from book.models import Book
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, redirect
 from .forms import BookForm
-
+from rest_framework import generics
+from .serializers import BookSerializer
 
 
 class BookListView(ListView):
@@ -29,3 +30,6 @@ def create_book(request):
         form = BookForm()
     return render(request, 'book/add_book.html', {'form': form})
 
+class BookAPIView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
