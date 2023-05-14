@@ -135,3 +135,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
 }
+
+# Celery
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:8000/0'
