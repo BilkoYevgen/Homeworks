@@ -24,7 +24,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -138,4 +138,5 @@ REST_FRAMEWORK = {
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:8000/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'

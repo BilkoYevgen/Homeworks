@@ -2,8 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from logging.config import dictConfig
 from .config import AppConfig
+import os
+from dotenv import load_dotenv
 
-db = SQLAlchemy()
+load_dotenv()
+
 app = Flask(__name__)
 
 dictConfig({
@@ -15,7 +18,10 @@ dictConfig({
 
 app.config.from_object(AppConfig)
 
-db.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 from .views import *
 from .models import *

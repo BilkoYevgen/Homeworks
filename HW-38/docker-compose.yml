@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  web:
+    image: django_app:latest
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - broker_network
+      - nginx_network
+      - database_network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    networks:
+      - nginx_network
+    depends_on:
+      - web
+
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    networks:
+      - database_network
+
+  redis:
+    image: redis:latest
+    networks:
+      - broker_network
+    volumes:
+      - broker_data:/data
+
+  celery_worker:
+    image: django_app:latest
+    command: celery -A homework worker
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - broker_network
+      - database_network
+
+  celery_beat:
+    image: django_app:latest
+    command: celery -A homework beat
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - broker_network
+
+networks:
+  broker_network:
+    name: broker_network
+    driver: bridge
+  nginx_network:
+    name: nginx_network
+    driver: bridge
+  database_network:
+    name: database_network
+    driver: bridge
+
+
+volumes:
+  postgres_data:
+  broker_data:
